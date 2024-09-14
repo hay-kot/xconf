@@ -12,9 +12,8 @@ go get -u github.com/hay-kot/xconf
 
 ## Features
 
-// TODO: Add Features
-
-## Examples
-
-// TODO: Add Examples
-
+- TOML Provider for sourcing configuration from a TOML File.
+- Read TOML path from cli args or environment variables.
+- Path Resolver for resolving relative paths in configuration files
+  - Resolves `./path` to be relative to the configuration file parent directory.
+  - Resolves `~/path` to be relative to the user's home directory.

@@ -14,7 +14,8 @@ import (
 // executed to apply defaults and overrides. Fields that are not set to
 // their zero after the toml is parsed will have the defaults ignored.
 type TOML struct {
-	data []byte
+	filepath string
+	data     []byte
 }
 
 // WithFileSources accepts a list of flags and envs to search for the
@@ -48,7 +49,9 @@ func WithFileSources(args []string, flags []string, envs []string) (TOML, error)
 		return TOML{}, fmt.Errorf("open file: %w", err)
 	}
 
-	return WithReader(f), nil
+	t := WithReader(f)
+	t.filepath = filepath
+	return t, nil
 }
 
 func WithData(data []byte) TOML {
@@ -66,10 +69,16 @@ func WithReader(r io.Reader) TOML {
 }
 
 // Process performs the actual processing of the toml.
-func (y TOML) Process(prefix string, cfg interface{}) error {
-	err := toml.Unmarshal(y.data, cfg)
+func (t TOML) Process(prefix string, cfg interface{}) error {
+	err := toml.Unmarshal(t.data, cfg)
 	if err != nil {
 		return fmt.Errorf("unmarshal toml: %w", err)
 	}
 	return nil
+}
+
+// FilePath returns the file path of the toml file if provided. If no filepath
+// was found or provided, an empty string is returned.
+func (t TOML) FilePath() string {
+	return t.filepath
 }

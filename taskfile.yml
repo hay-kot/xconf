@@ -49,4 +49,4 @@ tasks:
     env:
       EX_LOG_LEVEL: "from env"
     cmds:
-      - go run ./cmd/ex/main.go --toml-file ./cmd/ex/ex.toml
+      - go run ./cmd/ex/main.go --toml-file ./cmd/ex/ex.toml {{ .CLI_ARGS }}

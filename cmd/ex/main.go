@@ -11,8 +11,10 @@ import (
 )
 
 type Nested struct {
-	Name   string `toml:"name"   conf:"help:Name of the nested struct,notzero"`
-	Number int    `toml:"number"`
+	Name     string `toml:"name"      conf:"help:Name of the nested struct,notzero"`
+	Number   int    `toml:"number"`
+	UserPath string `toml:"user_path" xconf:"resolve"`
+	RelPath  string `toml:"rel_path"  xconf:"resolve"`
 }
 
 type Config struct {
@@ -46,6 +48,11 @@ func run() error {
 			return nil
 		}
 		return fmt.Errorf("parsing config: %w", err)
+	}
+
+	err = xconf.ResolvePaths(tomlProvider.FilePath(), cfg)
+	if err != nil {
+		return err
 	}
 
 	v, err := json.MarshalIndent(cfg, "", "  ")

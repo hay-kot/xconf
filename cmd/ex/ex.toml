@@ -3,3 +3,5 @@ enable_config = true
 [nested]
 name = "My Name"
 number = 123
+user_path = "~/path/to/logs.log"
+rel_path = "./path/to/logs.log"

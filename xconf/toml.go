@@ -17,25 +17,25 @@ type TOML struct {
 	data []byte
 }
 
-// WithData accepts the toml document as a slice of bytes.
-func WithData(data []byte) TOML {
-	return TOML{
-		data: data,
-	}
-}
-
-// WithFileEnv accepts the environment variable names to look for the file path.
+// WithFileSources accepts a list of flags and envs to search for the
+// file path to read the toml from. The first file found will be used.
+// If no file is found, an empty TOML is returned.
 //
-// The envs slice should contain the environment variable names to look for the
-// file path. The first match will be used to extract the file path.
+// Example:
 //
-// If the file path is not found, an empty TOML struct is returned.
-func WithFileEnv(envs []string) (TOML, error) {
+//	cfg, err := xconf.WithFileSources([]string{"--config", "-c"}, []string{"CONFIG_FILE"})
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+func WithFileSources(flags []string, envs []string) (TOML, error) {
 	var filepath string
-	for _, env := range envs {
-		filepath = os.Getenv(env)
-		if filepath != "" {
-			break
+	filepath = parseArg(os.Args, flags)
+	if filepath == "" {
+		for _, env := range envs {
+			filepath = os.Getenv(env)
+			if filepath != "" {
+				break
+			}
 		}
 	}
 
@@ -51,26 +51,8 @@ func WithFileEnv(envs []string) (TOML, error) {
 	return WithReader(f), nil
 }
 
-// WithFileFlag accepts the command line arguments and flags to parse
-// the file path from the command line arguments.
-//
-// The flags slice should contain the flag names to look for in the
-// command line arguments. The first match will be used to extract the
-// file path.
-//
-// If the flag is not found, an empty TOML struct is returned.
-func WithFileFlag(args []string, flags ...string) (TOML, error) {
-	filepath := parseArg(args, flags)
-	if filepath == "" {
-		return TOML{}, nil
-	}
-
-	f, err := os.Open(filepath)
-	if err != nil {
-		return TOML{}, fmt.Errorf("open file: %w", err)
-	}
-
-	return WithReader(f), nil
+func WithData(data []byte) TOML {
+	return TOML{data: data}
 }
 
 // WithReader accepts a reader to read the toml.

@@ -27,9 +27,9 @@ type TOML struct {
 //	if err != nil {
 //		log.Fatal(err)
 //	}
-func WithFileSources(flags []string, envs []string) (TOML, error) {
+func WithFileSources(args []string, flags []string, envs []string) (TOML, error) {
 	var filepath string
-	filepath = parseArg(os.Args, flags)
+	filepath = parseArg(args, flags)
 	if filepath == "" {
 		for _, env := range envs {
 			filepath = os.Getenv(env)

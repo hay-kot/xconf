@@ -42,3 +42,11 @@ tasks:
       - task: tidy
       - task: lint
       - task: test
+
+  example:
+    desc: Run Example
+    aliases: [ex]
+    env:
+      EX_LOG_LEVEL: "from env"
+    cmds:
+      - go run ./cmd/ex/main.go --toml-file ./cmd/ex/ex.toml

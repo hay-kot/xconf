@@ -1,0 +1,5 @@
+enable_config = true
+
+[nested]
+name = "My Name"
+number = 123
